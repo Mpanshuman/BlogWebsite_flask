@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static',filename='profile.css')}}">
+{% endblock head %}
+{% block content %}
+<div class="content-section">
+    <div class="mdeia">
+        <img class="rounded-circle account-img" src="{{profile_pic}}" alt="nopic">
+        <div class="media-body">
+            <h2 class="account-heading">{{user.username}}</h2>
+            <p class="text-secondary">{{user.email}}</p>
+        </div>
+    </div>
+    </div>
+
+    
+<h1 class="account-heading">Posts by: {{user.username}}</h1>
+<div class="content-section"> 
+
+    <div class="mdeia">
+    {% for post in posts.items %}
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{url_for('static',filename='profilepic/'+post.auther.profile_pic)}}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.auther.username }}</a>
+              <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+            </div>
+            {% if post.auther == current_user %}
+            <div>
+            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('post_update',post_id=post.id)}}">Update</a>
+            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('post_delete',post_id=post.id)}}">Delete</a>
+            </div>
+            {% endif %}
+
+            <h2><a class="article-title" href="{{url_for('post',post_id=post.id)}}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+{% endfor %}
+    </div>
+</div>
+
+{% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1,right_current=2) %}
+  {% if  page_num %}
+    {% if  posts.page == page_num %}
+      <a class = "btn btn-info mb-4" href="{{url_for('user_profile',user_id=user.id,page = page_num)}}">{{page_num}}</a>
+    {% else %}
+    <a class = "btn btn-outline-info mb-4" href="{{url_for('user_profile',user_id=user.id,page = page_num)}}">{{page_num}}</a>
+    {% endif %}
+  {% else %}
+  {% endif %}
+{% endfor %}
+
+{% endblock content %}

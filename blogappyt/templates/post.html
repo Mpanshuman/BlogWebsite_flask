@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{url_for('static',filename='profilepic/'+post.auther.profile_pic)}}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.auther.username }}</a>
+              <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+            </div>
+            {% if post.auther == current_user %}
+            <div>
+            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('post_update',post_id=post.id)}}">Update</a>
+            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('post_delete',post_id=post.id)}}">Delete</a>
+            </div>
+            {% endif %}
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+
+{% endblock content %}

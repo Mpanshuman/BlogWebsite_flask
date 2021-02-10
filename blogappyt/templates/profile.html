@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static',filename='profile.css')}}">
+{% endblock head %}
+{% block content %}
+<div class="content-section">
+    <div class="mdeia">
+        <img class="rounded-circle account-img" src="{{profile_pic}}" alt="nopic">
+        <div class="media-body">
+            <h2 class="account-heading">{{current_user.username}}</h2>
+            <p class="text-secondary">{{current_user.email}}</p>
+        </div>
+    </div>
+
+    
+        <form action="" method="POST" enctype="multipart/form-data" id='update_form'>
+            {{form.hidden_tag()}}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Update Profile</legend>
+                <div class="form-group">
+                    {{form.username.label(class="form-control-label")}}
+                    {% if form.username.errors %}
+                            {{ form.username(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+                </div>
+                <div class="form-group">
+                    {{form.email.label(class="form-control-label")}}
+                    {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                </div>
+                <div class="form-group">
+                    {{form.profilepic.label()}}
+                    {{form.profilepic(class="form-control-file")}}
+                    {% if form.profilepic.errors %}
+                    {% for error in form.profilepic.errors %}
+                        <span class="text-danger">{{ error }}</span><br>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group mt-3">
+                {{form.submit(class="btn btn-outline-info")}}
+            </div>
+        </form>
+        <button class="btn btn-outline-info" onclick="myFunction()" id="update_hide">Update_profile</button>
+    
+</div>
+
+<div class="content-section">
+    <div class="mdeia">
+    {% for post in posts %}
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{url_for('static',filename='profilepic/'+post.auther.profile_pic)}}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.auther.username }}</a>
+              <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+            </div>
+            {% if post.auther == current_user %}
+            <div>
+            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('post_update',post_id=post.id)}}">Update</a>
+            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('post_delete',post_id=post.id)}}">Delete</a>
+            </div>
+            {% endif %}
+
+            <h2><a class="article-title" href="{{url_for('post',post_id=post.id)}}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+{% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+<script src="{{url_for('static',filename='profile.js')}}"></script>
+{% endblock javascript%}
