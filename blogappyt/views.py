@@ -2,7 +2,7 @@ from .forms import RegistrationForm, LoginForm, UpdateProfileForm, PostForm, Req
 from flask import render_template,flash,redirect,url_for,request,abort
 from flask_login import current_user
 from blogappyt import app,bcrypt,db, mail
-from blogappyt.models import User,Post
+from blogappyt.models import User,Post,Like_Post
 from flask_login import login_user,current_user,logout_user,login_required
 import secrets
 import os
@@ -17,7 +17,10 @@ def index():
     # read from url ?page=1
     # request.args.get(arguement,default,type)
     page = request.args.get('page',1,type=int)
+    post_likes = Like_Post.query.order_by(Like_Post.date_posted.desc()).all()
+    all_post = Post.query.order_by(Post.date_posted.desc()).all()
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page,per_page=5)
+    print(type(Post.query.order_by(Post.date_posted.desc())))
     return render_template('index.html',posts = posts)
 
 @app.route('/about')
@@ -103,6 +106,10 @@ def create_post():
         post = Post(title = form.title.data,content = form.content.data,auther = current_user)
         db.session.add(post)
         db.session.commit()
+        print('post_id:',post.id)
+        post_liked = Like_Post(post_id = post.id,post_likes = post)
+        db.session.add(post_liked)
+        db.session.commit()
         flash('Your Blog is Posted...','success')
         return redirect(url_for('index'))
 
@@ -112,7 +119,9 @@ def create_post():
 @login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html',title = post.title,post=post)
+    post_liked = Like_Post.query.get_or_404(post_id)
+    print(post_liked)
+    return render_template('post.html',title = post.title,post=post,post_liked=post_liked)
 
 @app.route('/post/<int:post_id>/update',methods=['GET','POST'])
 @login_required
@@ -140,9 +149,11 @@ def post_update(post_id):
 @login_required
 def post_delete(post_id):
     post = Post.query.get_or_404(post_id)
+    post_liked = Like_Post.query.get_or_404(post_id)
     if post.auther != current_user:
         abort(403)
     db.session.delete(post)
+    db.session.delete(post_liked)
     db.session.commit()
     flash('Your Post has been deleted...','success')
     return redirect(url_for('index'))
@@ -201,3 +212,23 @@ def reset_password(token):
         return redirect(url_for('login'))
    
     return render_template('reset_password.html',form=form,title = 'Reset Password')
+
+@app.route('/likepost/<int:post_id>')
+@login_required
+def like_post(post_id):
+    post_like_counter = Like_Post.query.filter_by(post_id = post_id).first()
+    if post_like_counter:
+        post_like_counter.like_counter += 1
+        db.session.add(post_like_counter)
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/dislikepost/<int:post_id>')
+@login_required
+def dislike_post(post_id):
+    post_dislike_counter = Like_Post.query.filter_by(post_id = post_id).first()
+    if post_dislike_counter:
+        post_dislike_counter.dislike_counter += 1
+        db.session.add(post_dislike_counter)
+        db.session.commit()
+        return redirect(request.referrer)

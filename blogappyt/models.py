@@ -8,6 +8,7 @@ def load_user(user_id):
 # Database
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
+    
     id = db.Column(db.Integer,primary_key= True)
     username = db.Column(db.String(60),unique = True, nullable = False)
     email = db.Column(db.String(60),unique = True, nullable = False)
@@ -34,11 +35,22 @@ class User(db.Model, UserMixin):
 
 class Post(db.Model):
     __tablename__ = 'post'
+    
     id = db.Column(db.Integer,primary_key = True)
     title = db.Column(db.String(60),nullable = False)
     date_posted = db.Column(db.DateTime,nullable = False,default = datetime.utcnow)
     content = db.Column(db.Text,nullable = False)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    likes = db.relationship('Like_Post',backref = "post_likes",lazy = True)
 
     def __repr__(self):
         return '<Post %r>' %self.title
+
+class Like_Post(db.Model):
+    __tablename__ = 'likepost'
+    
+    id = db.Column(db.Integer,primary_key = True)
+    post_id = db.Column(db.Integer,db.ForeignKey('post.id'))
+    like_counter = db.Column(db.Integer,default = 0)
+    dislike_counter = db.Column(db.Integer,default = 0)
+    date_posted = db.Column(db.DateTime,nullable = False,default = datetime.utcnow)
