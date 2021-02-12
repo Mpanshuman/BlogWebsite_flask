@@ -5,20 +5,20 @@
   <img class="rounded-circle article-img" src="{{url_for('static',filename='profilepic/'+post.auther.profile_pic)}}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{{url_for('user_profile',user_id=post.auther.id)}}">{{ post.auther.username }}</a>
+              <a class="mr-2" href="{{url_for('users.user_profile',user_id=post.auther.id)}}">{{ post.auther.username }}</a>
               <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
             </div>
             {% if post.auther == current_user %}
             <div>
-            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('post_update',post_id=post.id)}}">Update</a>
-            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('post_delete',post_id=post.id)}}">Delete</a>
+            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('posts.post_update',post_id=post.id)}}">Update</a>
+            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('posts.post_delete',post_id=post.id)}}">Delete</a>
             </div>
             {% endif %}
 
-            <h2><a class="article-title" href="{{url_for('post',post_id=post.id)}}">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{{url_for('posts.post',post_id=post.id)}}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
-            <a class="btn btn-outline-info btn-sm m-1" href="{{url_for('like_post',post_id=post.id)}}">Like</a>
-            <a class="btn btn-outline-danger btn-sm m-1" href="{{url_for('dislike_post',post_id=post.id)}}">Dislike</a>
+            <a class="btn btn-outline-info btn-sm m-1" href="{{url_for('posts.like_post',post_id=post.id)}}">Like</a>
+            <a class="btn btn-outline-danger btn-sm m-1" href="{{url_for('posts.dislike_post',post_id=post.id)}}">Dislike</a>
           </div>
         </article>
 {% endfor %}
@@ -26,9 +26,9 @@
 {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1,right_current=2) %}
   {% if  page_num %}
     {% if  posts.page == page_num %}
-      <a class = "btn btn-info mb-4" href="{{url_for('index',page = page_num)}}">{{page_num}}</a>
+      <a class = "btn btn-info mb-4" href="{{url_for('main.index',page = page_num)}}">{{page_num}}</a>
     {% else %}
-    <a class = "btn btn-outline-info mb-4" href="{{url_for('index',page = page_num)}}">{{page_num}}</a>
+    <a class = "btn btn-outline-info mb-4" href="{{url_for('main.index',page = page_num)}}">{{page_num}}</a>
     {% endif %}
   {% else %}
   {% endif %}

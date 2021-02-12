@@ -57,7 +57,7 @@
                 {{form.submit(class="btn btn-outline-info")}}
             </div>
         </form>
-        <button class="btn btn-outline-info" onclick="myFunction()" id="update_hide">Update_profile</button>
+       
     
 </div>
 
@@ -73,12 +73,12 @@
             </div>
             {% if post.auther == current_user %}
             <div>
-            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('post_update',post_id=post.id)}}">Update</a>
-            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('post_delete',post_id=post.id)}}">Delete</a>
+            <a class="btn btn-secondary btn-sm m-1" href="{{url_for('posts.post_update',post_id=post.id)}}">Update</a>
+            <a  class="btn btn-danger btn-sm m-1" href="{{url_for('posts.post_delete',post_id=post.id)}}">Delete</a>
             </div>
             {% endif %}
 
-            <h2><a class="article-title" href="{{url_for('post',post_id=post.id)}}">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{{url_for('posts.post',post_id=post.id)}}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
           </div>
         </article>
