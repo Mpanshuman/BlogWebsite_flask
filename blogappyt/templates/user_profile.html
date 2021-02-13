@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="{{url_for('static',filename='profile.css')}}">
 {% endblock head %}
 {% block content %}
+{% if current_user.role == 'admin'%}
 <div class="content-section">
     <div class="mdeia">
         <img class="rounded-circle account-img" src="{{profile_pic}}" alt="nopic">
@@ -10,9 +11,11 @@
             <h2 class="account-heading">{{user.username}}</h2>
             <p class="text-secondary">{{user.email}}</p>
         </div>
+        <a class="btn btn-warning ml-4" href="#">Deactivate</a>
+        <a class="btn btn-danger ml-4" href="#">Delete</a>
     </div>
     </div>
-
+{% endif %}
     
 <h1 class="account-heading">Posts by: {{user.username}}</h1>
 <div class="content-section"> 

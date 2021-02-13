@@ -42,8 +42,8 @@ def post(post_id):
 def post_update(post_id):
     post = Post.query.get_or_404(post_id)
     form = PostForm()
-    if post.auther != current_user:
-        abort(403)
+    if post.auther != current_user and current_user.role != 'admin':
+        abort(403)    
 
     if form.validate_on_submit():
         post.title = form.title.data
@@ -64,7 +64,7 @@ def post_update(post_id):
 def post_delete(post_id):
     post = Post.query.get_or_404(post_id)
     post_liked = Like_Post.query.get_or_404(post_id)
-    if post.auther != current_user:
+    if post.auther != current_user and current_user.role != 'admin':
         abort(403)
     db.session.delete(post)
     db.session.delete(post_liked)

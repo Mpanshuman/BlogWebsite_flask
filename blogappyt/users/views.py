@@ -115,3 +115,17 @@ def reset_password(token):
         return redirect(url_for('users.login'))
    
     return render_template('reset_password.html',form=form,title = 'Reset Password')
+
+
+@users.route('/admin/register',methods = ['GET','POST'])
+def admin_register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data,email = form.email.data,password= hashed_password)
+        user.role = 'admin'
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Registartion Completed for {form.username.data}!','success')
+        return redirect(url_for('users.login'))
+    return render_template('registration.html',form=form,title = 'Admin_Registration')

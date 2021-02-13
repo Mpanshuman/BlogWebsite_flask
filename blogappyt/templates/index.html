@@ -8,7 +8,7 @@
               <a class="mr-2" href="{{url_for('users.user_profile',user_id=post.auther.id)}}">{{ post.auther.username }}</a>
               <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
             </div>
-            {% if post.auther == current_user %}
+            {% if post.auther == current_user or current_user.role == 'admin'%}
             <div>
             <a class="btn btn-secondary btn-sm m-1" href="{{url_for('posts.post_update',post_id=post.id)}}">Update</a>
             <a  class="btn btn-danger btn-sm m-1" href="{{url_for('posts.post_delete',post_id=post.id)}}">Delete</a>
