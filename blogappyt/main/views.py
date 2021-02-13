@@ -17,7 +17,7 @@ def index():
     all_post = Post.query.order_by(Post.date_posted.desc()).all()
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page,per_page=5)
     print(type(Post.query.order_by(Post.date_posted.desc())))
-    return render_template('index.html',posts = posts)
+    return render_template('index.html',posts = posts,post_likes = post_likes)
 
 @main.route('/about')
 def about():

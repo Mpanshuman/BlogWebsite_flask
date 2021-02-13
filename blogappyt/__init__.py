@@ -5,8 +5,10 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from blogappyt.config import Config
+from flask_migrate import Migrate,MigrateCommand
 
 
+migrate = Migrate()
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -24,6 +26,15 @@ def create_app(config_class = Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    
+    # Solves DROP column issue of the sqlite
+
+    with app.app_context():
+        
+        if db.engine.url.drivername == 'sqlite':
+            migrate.init_app(app, db, render_as_batch=True)
+        else:
+            migrate.init_app(app, db)
 
     from blogappyt.users.views import users
     from blogappyt.posts.views import posts 
@@ -33,4 +44,5 @@ def create_app(config_class = Config):
     app.register_blueprint(posts)
     app.register_blueprint(main)
 
+    
     return app
